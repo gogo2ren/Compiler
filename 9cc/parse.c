@@ -17,6 +17,13 @@ bool consume(char *op) {
   return true;
 }
 
+bool consume_ident(void){
+    if(token->kind != TK_IDENT)
+    return false;
+    token = token->next;
+    return true;
+}
+
 // 次のトークンが期待している記号のときには、トークンを1つ読み進める。
 // それ以外の場合にはエラーを報告する。
 void expect(char *op) {
@@ -35,7 +42,15 @@ int expect_number() {
   token = token->next;
   return val;
 }
-
+// 次のトークンが数値変数の場合、トークンを1つ読み進めてその数値を返す。
+// それ以外の場合にはエラーを報告する。
+int expect_ident() {
+  if (token->kind != TK_IDENT)
+    error_at(token->str , "変数ではありません");
+  int val = token->val;
+  token = token->next;
+  return val;
+}
 bool at_eof() {
   return token->kind == TK_EOF;
 }
@@ -63,10 +78,10 @@ Node *add();
 Node *mul();
 Node *primary();
 Node *unary();
-// expr = equality
-Node *expr() {
-  return equality();
-}
+Node *assign();
+Node *stmt();
+void program();
+
 // equality = relational ("==" relational | "!=" relational)*
 Node *equality() {
   Node *node = relational();
@@ -121,13 +136,23 @@ Node *mul() {
   }
 }
 // primary = "(" expr ")" | num
+//primary    = num | ident | "(" expr ")"
 Node *primary() {
+  if (expect_number())
+  {
+    return new_num(expect_number());
+  }
+  if (consume_ident()) {
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_LVAR;
+    node->offset = (token->str[0] - 'a' + 1) * 8;
+    return node;
+  }
   if (consume("(")) {
     Node *node = expr();
     expect(")");
     return node;
   }
-  return new_num(expect_number());
 }
 // unary   = ("+" | "-")? primary
 Node *unary() {
@@ -138,10 +163,32 @@ Node *unary() {
   return primary();
 }
 
-Node *parse(Token *tok)
+
+//assign     = equality ("=" assign)?
+Node *assign() {
+  Node *node = equality();
+  if (consume("="))
+    node = new_node(ND_ASSIGN);
+  return node;
+}
+
+//expr       = assign
+Node *expr() {
+  return assign();
+}
+
+//stmt       = expr ";"
+Node *stmt() {
+  Node *node = expr();
+  expect(";");
+  return node;
+}
+
+void parse(Node* code[], Token *tok)
 {
   token = tok;
-  Node *node = expr();
-  if (tok->kind != TK_EOF)
-  return node;
+  int i = 0;
+  while (!at_eof())
+    code[i++] = stmt();
+  code[i] = NULL;
 }

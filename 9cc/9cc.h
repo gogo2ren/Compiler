@@ -8,6 +8,7 @@
 // トークンの種類
 typedef enum {
   TK_RESERVED, // 記号
+  TK_IDENT,    // 識別子
   TK_NUM,      // 整数トークン
   TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
@@ -33,19 +34,24 @@ typedef enum {
   ND_NE,  // !=
   ND_LT,  // <
   ND_LE,  // <=
-  ND_NUM, // Integer
+  ND_NUM,    // 整数
+  ND_ASSIGN, // =
+  ND_LVAR,   // ローカル変数
 } NodeKind;
 
-// AST node type
 typedef struct Node Node;
-struct Node {
-  NodeKind kind; // Node kind
-  Node *lhs;     // Left-hand side
-  Node *rhs;     // Right-hand side
-  int val;       // Used if kind == ND_NUM
-};
 
-Node *parse(Token *tok);
+// 抽象構文木のノード
+struct Node {
+  NodeKind kind; // ノードの型
+  Node *lhs;     // 左辺
+  Node *rhs;     // 右辺
+  int val;       // kindがND_NUMの場合のみ使う
+  int offset;    // kindがND_LVARの場合のみ使う
+};
+extern Node* code[100];
+void parse(Node* code[], Token *tok);
+void program();
 //
 // codegen.c
 //
