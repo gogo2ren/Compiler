@@ -16,6 +16,7 @@ typedef enum {
   TK_PUNCT, // Punctuators
   TK_NUM,   // Numeric literals
   TK_EOF,   // End-of-file markers
+  TK_RETURN, // Return
 } TokenKind;
 
 // Token type
@@ -53,6 +54,7 @@ typedef enum {
   ND_EXPR_STMT, // Expression statement
   ND_VAR,       // Variable
   ND_NUM,       // Integer
+  ND_RETURN,       // Return
 } NodeKind;
 
 // AST node type

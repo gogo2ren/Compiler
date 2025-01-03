@@ -50,4 +50,9 @@ assert 3 'a=3; a;'
 assert 8 'a=3; z=5; a+z;'
 assert 6 'a=b=3; a+b;'
 
+assert 7 'return 7; return 49;'
+
+assert 14 'a=3; b = 5 * 6 -8;return a + b /2;'
+assert 12 'a=2; b = 5 * 6 -8;return (a + b) /2;'
+
 echo OK

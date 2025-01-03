@@ -41,8 +41,15 @@ static Node *new_var_node(char name) {
   return node;
 }
 
-// stmt = expr-stmt
+// stmt    = expr ";" | "return" expr ";"
 static Node *stmt(Token **rest, Token *tok) {
+
+  Node *node;
+  if (tok->kind == TK_RETURN) {
+    Node *node = new_unary(ND_RETURN, expr(&tok, tok->next));
+    *rest = skip(tok, ";");
+    return node;
+  }
   return expr_stmt(rest, tok);
 }
 

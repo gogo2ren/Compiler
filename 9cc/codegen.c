@@ -89,6 +89,13 @@ static void gen_expr(Node *node) {
 }
 
 static void gen_stmt(Node *node) {
+  if (node->kind == ND_RETURN) {
+    gen_expr(node->lhs);
+    printf("  mov %%rbp, %%rsp\n");
+    printf("  pop %%rbp\n");
+    printf("  ret\n");
+    return;
+  }
   if (node->kind == ND_EXPR_STMT) {
     gen_expr(node->lhs);
     return;
