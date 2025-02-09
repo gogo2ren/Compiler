@@ -57,6 +57,7 @@ typedef enum {
   ND_RETURN,    // Return
   ND_IF,        // If
   ND_LOOP,       // "for" or "while"
+  ND_BLOCK,     // { ... }
 } NodeKind;
 
 // AST node type
@@ -76,6 +77,9 @@ struct Node {
   Node *init;
   Node *inc;
   
+  // Block
+  Node *body;
+
 };
 
 Node *parse(Token *tok);

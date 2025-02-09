@@ -94,6 +94,12 @@ static void gen_expr(Node *node) {
 }
 
 static void gen_stmt(Node *node) {
+if(node->kind == ND_BLOCK)
+{
+  for (Node *n = node->body; n; n = n->next)
+    gen_stmt(n);
+  return;
+}
   if(node->kind == ND_LOOP){
       int c = count();
       if (node->init)
@@ -149,10 +155,12 @@ void codegen(Node *node) {
   printf("  mov %%rsp, %%rbp\n");
   printf("  sub $208, %%rsp\n");
 
-  for (Node *n = node; n; n = n->next) {
-    gen_stmt(n);
-    assert(depth == 0);
-  }
+  // for (Node *n = node; n; n = n->next) {
+  //   gen_stmt(n);
+  //   assert(depth == 0);
+  // }
+  gen_stmt(node);
+  assert(depth == 0);
 
   printf("  mov %%rbp, %%rsp\n");
   printf("  pop %%rbp\n");
