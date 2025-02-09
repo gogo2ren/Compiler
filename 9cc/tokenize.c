@@ -112,6 +112,11 @@ Token *tokenize(char *p) {
       p += 4;
       continue;
     }
+    if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])) {
+      cur = cur->next = new_token(TK_KEYWORD, p, p + 5);
+      p += 5;
+      continue;
+    }
 
     // Identifier
     if ('a' <= *p && *p <= 'z') {

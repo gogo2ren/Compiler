@@ -64,7 +64,16 @@ static Node *stmt(Token **rest, Token *tok) {
       *rest = tok;
       return node;
     }
+    if (equal(tok, "while")) {
+      Node *node = new_node(ND_LOOP);
+      tok = skip(tok->next, "(");
+      node->cond = expr(&tok, tok);
+      tok = skip(tok, ")");
+      node->then = stmt(rest, tok);
+      return node;
+    }
   }
+
   return expr_stmt(rest, tok);
 }
 

@@ -56,6 +56,7 @@ typedef enum {
   ND_NUM,       // Integer
   ND_RETURN,    // Return
   ND_IF,        // If
+  ND_LOOP,       // "for" or "while"
 } NodeKind;
 
 // AST node type
@@ -68,10 +69,12 @@ struct Node {
   char name;     // Used if kind == ND_VAR
   int val;       // Used if kind == ND_NUM
 
-  // "if" statement
+  // "if"or "while" statement
   Node *cond;
   Node *then;
   Node *els;
+  Node *init;
+  Node *inc;
   
 };
 
