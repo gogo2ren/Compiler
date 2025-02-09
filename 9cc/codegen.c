@@ -97,7 +97,7 @@ static void gen_stmt(Node *node) {
   if(node->kind == ND_LOOP){
       int c = count();
       if (node->init)
-      gen_stmt(node->init);
+        gen_stmt(node->init);
       printf(".L.begin.%d:\n", c);
       if (node->cond) {
         gen_expr(node->cond);
