@@ -42,13 +42,28 @@ static Node *new_var_node(char name) {
 }
 
 // stmt    = expr ";" | "return" expr ";"
+//      | "if" "(" expr ")" stmt ("else" stmt)?
 static Node *stmt(Token **rest, Token *tok) {
 
   Node *node;
-  if (tok->kind == TK_RETURN) {
-    Node *node = new_unary(ND_RETURN, expr(&tok, tok->next));
-    *rest = skip(tok, ";");
-    return node;
+  if (tok->kind == TK_KEYWORD) {
+    if(equal(tok,"return"))
+    {
+      Node *node = new_unary(ND_RETURN, expr(&tok, tok->next));
+      *rest = skip(tok, ";");
+      return node;
+    }
+    if (equal(tok, "if")) {
+      Node *node = new_node(ND_IF);
+      tok = skip(tok->next, "(");
+      node->cond = expr(&tok, tok);
+      tok = skip(tok, ")");
+      node->then = stmt(&tok, tok);
+      if (equal(tok, "else"))
+        node->els = stmt(&tok, tok->next);
+      *rest = tok;
+      return node;
+    }
   }
   return expr_stmt(rest, tok);
 }

@@ -55,4 +55,12 @@ assert 7 'return 7; return 49;'
 assert 14 'a=3; b = 5 * 6 -8;return a + b /2;'
 assert 12 'a=2; b = 5 * 6 -8;return (a + b) /2;'
 
+
+assert 3 'if (0) return 2; return 3;'
+assert 3 'if (1-1) return 2; return 3;'
+assert 2 'if (1) return 2; return 3;'
+assert 2 'if (2-1) return 2; return 3;'
+# assert 4 'if (0) 1; 2; return 3; else return 4;'
+# assert 3 'if (1) 1; 2; return 3; else return 4;'
+
 echo OK

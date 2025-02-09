@@ -2,6 +2,11 @@
 
 static int depth;
 
+static int count(void) {
+  static int i = 1;
+  return i++;
+}
+
 static void push(void) {
   printf("  push %%rax\n");
   depth++;
@@ -89,6 +94,21 @@ static void gen_expr(Node *node) {
 }
 
 static void gen_stmt(Node *node) {
+  if (node->kind == ND_IF) 
+  {
+    int c = count();
+    gen_expr(node->cond);
+    // printf("  pop %%rax\n");
+    printf("  cmp $0, %%rax\n");
+    printf("  je  .L.else.%d\n", c);
+    gen_stmt(node->then);
+    printf("  jmp .L.end.%d\n", c);
+    printf(".L.else.%d:\n", c);
+    if (node->els)
+    gen_stmt(node->els);
+    printf(".L.end.%d:\n", c);
+    return;
+  }
   if (node->kind == ND_RETURN) {
     gen_expr(node->lhs);
     printf("  mov %%rbp, %%rsp\n");

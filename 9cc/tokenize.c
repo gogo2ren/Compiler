@@ -98,8 +98,18 @@ Token *tokenize(char *p) {
       continue;
     }
     if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])) {
-      cur = cur->next = new_token(TK_RETURN, p, p + 6);
+      cur = cur->next = new_token(TK_KEYWORD, p, p + 6);
       p += 6;
+      continue;
+    }
+    if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2])) {
+      cur = cur->next = new_token(TK_KEYWORD, p, p + 2);
+      p += 2;
+      continue;
+    }
+    if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])) {
+      cur = cur->next = new_token(TK_KEYWORD, p, p + 4);
+      p += 4;
       continue;
     }
 

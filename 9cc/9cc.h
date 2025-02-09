@@ -16,7 +16,7 @@ typedef enum {
   TK_PUNCT, // Punctuators
   TK_NUM,   // Numeric literals
   TK_EOF,   // End-of-file markers
-  TK_RETURN, // Return
+  TK_KEYWORD, // Keywords
 } TokenKind;
 
 // Token type
@@ -54,7 +54,8 @@ typedef enum {
   ND_EXPR_STMT, // Expression statement
   ND_VAR,       // Variable
   ND_NUM,       // Integer
-  ND_RETURN,       // Return
+  ND_RETURN,    // Return
+  ND_IF,        // If
 } NodeKind;
 
 // AST node type
@@ -66,6 +67,12 @@ struct Node {
   Node *rhs;     // Right-hand side
   char name;     // Used if kind == ND_VAR
   int val;       // Used if kind == ND_NUM
+
+  // "if" statement
+  Node *cond;
+  Node *then;
+  Node *els;
+  
 };
 
 Node *parse(Token *tok);
